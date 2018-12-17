@@ -1,4 +1,4 @@
-# CodeReaper.exSocket
+# ExSocket
 The extended socket module for server and client side
 
 This module is compatible with...
