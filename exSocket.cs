@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net;
@@ -8,7 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Timers;
 
-namespace mklib
+namespace CodeReaper
 {
     //****************************************************************
     //                  Extended Socket Class 4.0.6
@@ -17,7 +17,7 @@ namespace mklib
     // Windows XP/7/8/10
     // - H.M Choi
     // ---------------------------------------------------------------
-    public class exSocket40
+    public class exSocket
     {
         #region Event Handler
         //에러 발생 event
@@ -58,12 +58,12 @@ namespace mklib
         public int ConnectInterval { get { return int.Parse(tmr.Interval.ToString()); } set { tmr.Interval = value; } }
         public bool AutoConnectEnable { get { return tmr.Enabled; } set { tmr.Enabled = value; } }
 
-        public exSocket40()
+        public exSocket()
         {
             tmr.Elapsed += tmr_Elapsed;
         }
 
-        public exSocket40(string ip, int port)
+        public exSocket(string ip, int port)
         {
             tmr.Elapsed += tmr_Elapsed;
             remoteIP = ip;
@@ -100,12 +100,12 @@ namespace mklib
             {
                 if (State == eState.Connecting)
                 {
-                    if (onError != null) { onError(11, "Socket Connect error (접속중인 작업이 있음)"); }
+                    if (onError != null) { onError(11, "Socket Connect error (Now work on connecting)"); }
                     return;
                 }
                 if (State == eState.Connected)
                 {
-                    if (onError != null) { onError(12, "Socket Connect error (이미 접속됨)"); }
+                    if (onError != null) { onError(12, "Socket Connect error (Already connected)"); }
                     return;
                 }
                 if (State == eState.Listening)
@@ -243,12 +243,12 @@ namespace mklib
         {
             if (State == eState.Connecting)
             {
-                if (onError != null) { onError(51, "Socket Listen error (접속중인 작업이 있음)"); }
+                if (onError != null) { onError(51, "Socket Listen error (Now working on listen)"); }
                 return;
             }
             if (State == eState.Connected)
             {
-                if (onError != null) { onError(52, "Socket Listen error (이미 접속됨)"); }
+                if (onError != null) { onError(52, "Socket Listen error (Already connected)"); }
                 return;
             }
             if (State == eState.Listening)
@@ -306,12 +306,6 @@ namespace mklib
                     if (innerSocket.Connected)
                     {
                         innerSocket.Shutdown(SocketShutdown.Both);
-
-                        // Disconnect할때 가끔씩 오랫동안 Pending되는 작업을 기다릴때가 있어, Timeout 적용을 위해 비동기 작업으로 변경
-                        //innerSocket.BeginDisconnect(true, new AsyncCallback(procEndDisconnect), obj).AsyncWaitHandle.WaitOne(1000);
-
-                        // Disconnect 작업은 Windows자체적으로 정리해야될 작업이 많으므로 반드시 기다려야 한다.
-                        // 괜히 무리해서 TimeOut을 설정해버리면 해야될 일이 제대로 처리되지 않아서 그 port가 막혀버리므로 조심해야 함..
                         //innerSocket.Disconnect(true);
                     }
 
@@ -364,7 +358,7 @@ namespace mklib
             {
                 if (State != eState.Connected)
                 {
-                    if (onError != null) { onError(111, "Socket 메세지 전송 Error (미접속)"); }
+                    if (onError != null) { onError(111, "Send data error (Not Connected)"); }
                     return;
                 }
                 byte[] byteData = Data;
@@ -392,7 +386,7 @@ namespace mklib
             }
             catch (Exception ex)
             {
-                if (onError != null) { onError(119, "Socket 메세지 전송 Error (" + ex.Message + ")"); }
+                if (onError != null) { onError(119, "Send data error (" + ex.Message + ")"); }
                 Disconnect();
             }
         }
@@ -403,7 +397,7 @@ namespace mklib
             {
                 if (State != eState.Connected)
                 {
-                    if (onError != null) { onError(121, "Socket 메세지 전송 Error (미접속)"); }
+                    if (onError != null) { onError(121, "Send data error (Not Connected)"); }
                     return;
                 }
 
@@ -438,5 +432,4 @@ namespace mklib
         #endregion
 
     }
-
 }
