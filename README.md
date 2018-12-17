@@ -1,5 +1,5 @@
 # CodeReaper.exSocket
-The extended socket control for server and client side
+The extended socket module for server and client side
 
 This module is compatible with...
  - VS2012 ~ VS2017 or later
